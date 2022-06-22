@@ -373,13 +373,14 @@ Archive::IOErrorCode Archive::extractArchive(const QString &path, const QString 
                 // Get the preview file:
                 QFile previewFile(dir.absolutePath() + QDir::separator() + "preview.png");
                 if (previewFile.open(QIODevice::WriteOnly)) {
-                    std::array<char, BUFFER_SIZE> buffer{};
+                    //std::array<char, BUFFER_SIZE> buffer{};
+                    char *buffer = new char[BUFFER_SIZE];
                     qint64 remainingBytes = size;
                     qint64 sizeRead = 0;
                     file.seek(stream.pos());
 
-                    while ((sizeRead = file.read(buffer.data(), qMin(BUFFER_SIZE, remainingBytes))) > 0) {
-                        previewFile.write(buffer.data(), sizeRead);
+                    while ((sizeRead = file.read(buffer, qMin(BUFFER_SIZE, remainingBytes))) > 0) {
+                        previewFile.write(buffer, sizeRead);
                         remainingBytes -= sizeRead;
                     }
                     previewFile.close();
